@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+/*
+// Your custom styles for the pop out on the element on map   -after Tailwind imports
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 300px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+.ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+  font-weight: bold;
+  color: black;
+}
+
+.ol-popup-closer:hover {
+  color: red;
+  cursor: pointer;
+}
+*/

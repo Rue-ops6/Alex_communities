@@ -1,5 +1,9 @@
 var wms_layers = [];
 
+// Or if you want to fit the map to your feature:
+map.getView().fit(jsonSource_RowanMustafa.getExtent(), { padding: [20, 20, 20, 20] });
+
+
 // MAP layers
         var lyr_EsriImagery_0 = new ol.layer.Tile({
             'title': 'Esri Imagery',
@@ -56,8 +60,9 @@ var lyr_AlexandrianGreeks_3 = new ol.layer.Vector({
 
 //2) The Added Rowan layer
 var format_RowanMustafa = new ol.format.GeoJSON();
-var features_RowanMustafa = format_RowanMustafa.readFeatures(json_RowanMustafa,
+var features_RowanMustafa = format_RowanMustafa.readFeatures(json_RowanMustafa,   //name in RowanMustafa.js  top var
     {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+console.log(features_RowanMustafa);  // Should log an array with 1 feature
 
 var jsonSource_RowanMustafa = new ol.source.Vector({
     attributions: ' ',
@@ -69,18 +74,18 @@ var lyr_RowanMustafa = new ol.layer.Vector({
     source: jsonSource_RowanMustafa,
     style: new ol.style.Style({
         stroke: new ol.style.Stroke({
-            color: 'darkgreen',
+            color: 'maroon',  // maroon stroke color
             width: 2
-        })
-    }),
+        }),
+    fill: new ol.style.Fill({
+        color: 'rgba(0, 0, 28, 0.83)'  // dark navy blue with 80% opacity
+            })
+}),
     popuplayertitle: "RowanMustafa",
     interactive: true,
     title: 'RowanMustafa'
 });
 lyr_RowanMustafa.setVisible(true);
-
-
-
 
 
 lyr_EsriImagery_0.setVisible(true);lyr_F4Map2D_1.setVisible(true);lyr_GoogleSatelliteHybrid_2.setVisible(true);lyr_AlexandrianGreeks_3.setVisible(true);
