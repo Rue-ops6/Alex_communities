@@ -1,8 +1,8 @@
 var wms_layers = [];
 
 // Or if you want to fit the map to your feature:
-map.getView().fit(jsonSource_RowanMustafa.getExtent(), { padding: [20, 20, 20, 20] });
-
+map.getView().fit(extent, map.getSize());
+//  map.getView().fit(jsonSource_RowanMustafa.getExtent(), { padding: [20, 20, 20, 20] });
 
 // MAP layers
         var lyr_EsriImagery_0 = new ol.layer.Tile({
@@ -63,7 +63,6 @@ var format_RowanMustafa = new ol.format.GeoJSON();
 var features_RowanMustafa = format_RowanMustafa.readFeatures(json_RowanMustafa,   //name in RowanMustafa.js  top var
     {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
 console.log(features_RowanMustafa);  // Should log an array with 1 feature
-
 var jsonSource_RowanMustafa = new ol.source.Vector({
     attributions: ' ',
 });
