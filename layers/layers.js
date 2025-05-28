@@ -45,8 +45,7 @@ map.getView().fit(extent, map.getSize());
 var format_AlexandrianGreeks_3 = new ol.format.GeoJSON();
 
  features_AlexandrianGreeks_3.forEach(function(feature) {
-    var oldPic = feature.get('AlexandrianGreeks — Form responses 1_Field8');
-    var newPic = feature.get('AlexandrianGreeks — Form responses 1_Field9');
+    var oldPic = feature.get('AlexandrianGreeks — Form responses 1_Field1');
 
     if (oldPic === '1') {
         feature.set('AlexandrianGreeks — Form responses 1_Field8', '/images/C:/Users/user/Desktop/prjs/- luxor/mapping/Alex_communities/imgs/1.jpg');
@@ -55,8 +54,9 @@ var format_AlexandrianGreeks_3 = new ol.format.GeoJSON();
         feature.set('AlexandrianGreeks — Form responses 1_Field9', '/images/C:/Users/user/Desktop/prjs/- luxor/mapping/Alex_communities/imgs/11.jpg');
     }
 });
-// var features_AlexandrianGreeks_3 = format_AlexandrianGreeks_3.readFeatures(json_AlexandrianGreeks_3,
-//             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+ var features_AlexandrianGreeks_3 = format_AlexandrianGreeks_3.readFeatures(json_AlexandrianGreeks_3,
+             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+             
 var jsonSource_AlexandrianGreeks_3 = new ol.source.Vector({
     attributions: ' ',
 });
