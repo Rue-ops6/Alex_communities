@@ -43,20 +43,21 @@ map.getView().fit(extent, map.getSize());
 // addedd layers before var layersList = [lyr_EsriImagery_0,lyr_F4Map2D_1,lyr_GoogleSatelliteHybrid_2,lyr_AlexandrianGreeks_3, lyr_RowanMustafa];
 // 1) attributes elements layer
 var format_AlexandrianGreeks_3 = new ol.format.GeoJSON();
-
- features_AlexandrianGreeks_3.forEach(function(feature) {
-    var oldPic = feature.get('AlexandrianGreeks — Form responses 1_Field1');
-
-    if (oldPic === '1') {
-        feature.set('AlexandrianGreeks — Form responses 1_Field8', '/images/C:/Users/user/Desktop/prjs/- luxor/mapping/Alex_communities/imgs/1.jpg');
-    }
-    if (newPic === '11') {
-        feature.set('AlexandrianGreeks — Form responses 1_Field9', '/images/C:/Users/user/Desktop/prjs/- luxor/mapping/Alex_communities/imgs/11.jpg');
-    }
-});
  var features_AlexandrianGreeks_3 = format_AlexandrianGreeks_3.readFeatures(json_AlexandrianGreeks_3,
              {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
-             
+             // to ded pic but have to change #VALUE! in AlexandriaGr.js
+//  features_AlexandrianGreeks_3.forEach(function(feature) {
+//     var oldPic = feature.get('AlexandrianGreeks — Form responses 1_Field1');
+
+//     if (oldPic === '1') {
+//         feature.set('AlexandrianGreeks — Form responses 1_Field8', '/images/C:/Users/user/Desktop/prjs/- luxor/mapping/Alex_communities/imgs/1.jpg');
+//     }
+//     if (newPic === '11') {
+//         feature.set('AlexandrianGreeks — Form responses 1_Field9', '/images/C:/Users/user/Desktop/prjs/- luxor/mapping/Alex_communities/imgs/11.jpg');
+//     }
+// });
+
+
 var jsonSource_AlexandrianGreeks_3 = new ol.source.Vector({
     attributions: ' ',
 });
@@ -70,7 +71,10 @@ var lyr_AlexandrianGreeks_3 = new ol.layer.Vector({
                 title: 'AlexandrianGreeks'
             });
 
-var format_RowanMustafa = new ol.format.GeoJSON();
+
+
+
+            var format_RowanMustafa = new ol.format.GeoJSON();
 var features_RowanMustafa = format_RowanMustafa.readFeatures(json_RowanMustafa,   //name in RowanMustafa.js  top var
     {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
 console.log(features_RowanMustafa);  // Should log an array with 1 feature
@@ -102,11 +106,12 @@ lyr_EsriImagery_0.setVisible(true);lyr_F4Map2D_1.setVisible(true);lyr_GoogleSate
 // add newlayers root here
 var layersList = [lyr_EsriImagery_0,lyr_F4Map2D_1,lyr_GoogleSatelliteHybrid_2,lyr_AlexandrianGreeks_3, lyr_RowanMustafa];
      // To show element properties variables by id n img the right way
-lyr_AlexandrianGreeks_3.set('fieldAliases', {'id': 'id', 'Timestamp': 'AlexandrianGreeks — Form responses 1_Field2', 'Surveyor': 'AlexandrianGreeks — Form responses 1_Field3', 'latitude and longitude': 'AlexandrianGreeks — Form responses 1_Field4', 'Element name': 'AlexandrianGreeks — Form responses 1_Field5', 'Element type': 'AlexandrianGreeks — Form responses 1_Field6', 'Its owner': 'AlexandrianGreeks — Form responses 1_Field7', 'Old picture': 'AlexandrianGreeks — Form responses 1_Field8', 'New picture': 'AlexandrianGreeks — Form responses 1_Field9', 'Its date': 'AlexandrianGreeks — Form responses 1_Field10', 'Its description': 'AlexandrianGreeks — Form responses 1_Field11', });
-lyr_AlexandrianGreeks_3.set('fieldImages', {'id': 'TextEdit', 'Timestamp': 'TextEdit', 'Surveyor': 'TextEdit', 'latitude and longitude': 'TextEdit', 'Element name': 'TextEdit', 'Element type': 'TextEdit', 'Its owner': 'TextEdit', 'Old picture': 'ExternalResource', 'New picture': 'ExternalResource', 'Its date': 'TextEdit', 'Its description': 'TextEdit', });
-lyr_AlexandrianGreeks_3.set('fieldLabels', {'id': 'no label', 'Timestamp': 'no label', 'Surveyor': 'no label', 'latitude and longitude': 'no label', 'Element name': 'no label', 'Element type': 'no label', 'Its owner': 'no label', 'Old picture': 'no label', 'New picture': 'no label', 'Its date': 'no label', 'Its description': 'no label', });
+lyr_AlexandrianGreeks_3.set('fieldAliases', {'id': 'id', 'AlexandrianGreeks — Form responses 1_Field2': 'AlexandrianGreeks — Form responses 1_Field2', 'AlexandrianGreeks — Form responses 1_Field3': 'AlexandrianGreeks — Form responses 1_Field3', 'AlexandrianGreeks — Form responses 1_Field4': 'AlexandrianGreeks — Form responses 1_Field4', 'AlexandrianGreeks — Form responses 1_Field5': 'AlexandrianGreeks — Form responses 1_Field5', 'AlexandrianGreeks — Form responses 1_Field6': 'AlexandrianGreeks — Form responses 1_Field6', 'AlexandrianGreeks — Form responses 1_Field7': 'AlexandrianGreeks — Form responses 1_Field7', 'AlexandrianGreeks — Form responses 1_Field8': 'AlexandrianGreeks — Form responses 1_Field8', 'AlexandrianGreeks — Form responses 1_Field9': 'AlexandrianGreeks — Form responses 1_Field9', 'AlexandrianGreeks — Form responses 1_Field10': 'AlexandrianGreeks — Form responses 1_Field10', 'AlexandrianGreeks — Form responses 1_Field11': 'AlexandrianGreeks — Form responses 1_Field11', 'AlexandrianGreeks — Form responses 1_Field12': 'AlexandrianGreeks — Form responses 1_Field12', });
+lyr_AlexandrianGreeks_3.set('fieldImages', {'id': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field2': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field3': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field4': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field5': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field6': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field7': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field8': 'ExternalResource', 'AlexandrianGreeks — Form responses 1_Field9': 'ExternalResource', 'AlexandrianGreeks — Form responses 1_Field10': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field11': 'TextEdit', 'AlexandrianGreeks — Form responses 1_Field12': 'TextEdit', });
+lyr_AlexandrianGreeks_3.set('fieldLabels', {'id': 'no label', 'AlexandrianGreeks — Form responses 1_Field2': 'no label', 'AlexandrianGreeks — Form responses 1_Field3': 'no label', 'AlexandrianGreeks — Form responses 1_Field4': 'no label', 'AlexandrianGreeks — Form responses 1_Field5': 'no label', 'AlexandrianGreeks — Form responses 1_Field6': 'no label', 'AlexandrianGreeks — Form responses 1_Field7': 'no label', 'AlexandrianGreeks — Form responses 1_Field8': 'no label', 'AlexandrianGreeks — Form responses 1_Field9': 'no label', 'AlexandrianGreeks — Form responses 1_Field10': 'no label', 'AlexandrianGreeks — Form responses 1_Field11': 'no label', 'AlexandrianGreeks — Form responses 1_Field12': 'no label', });
 lyr_AlexandrianGreeks_3.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
+
 
 
