@@ -43,7 +43,9 @@ map.getView().fit(extent, map.getSize());
 // addedd layers before var layersList = [lyr_EsriImagery_0,lyr_F4Map2D_1,lyr_GoogleSatelliteHybrid_2,lyr_AlexandrianGreeks_3, lyr_RowanMustafa];
 // 1) attributes elements layer
 var format_AlexandrianGreeks_3 = new ol.format.GeoJSON();
-
+ var features_AlexandrianGreeks_3 = format_AlexandrianGreeks_3.readFeatures(json_AlexandrianGreeks_3,
+             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+ /* Or to show pics !! but in ALexGr.js have to chane each value! to 1, 11,... or to find shorter way
  features_AlexandrianGreeks_3.forEach(function(feature) {
     var oldPic = feature.get('AlexandrianGreeks — Form responses 1_Field1');
 
@@ -54,9 +56,7 @@ var format_AlexandrianGreeks_3 = new ol.format.GeoJSON();
         feature.set('AlexandrianGreeks — Form responses 1_Field9', '/images/C:/Users/user/Desktop/prjs/- luxor/mapping/Alex_communities/imgs/11.jpg');
     }
 });
- var features_AlexandrianGreeks_3 = format_AlexandrianGreeks_3.readFeatures(json_AlexandrianGreeks_3,
-             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
-             
+*/
 var jsonSource_AlexandrianGreeks_3 = new ol.source.Vector({
     attributions: ' ',
 });
