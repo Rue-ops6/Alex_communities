@@ -1,11 +1,16 @@
 var wms_layers = [];
 
+/* Or if you want to fit the map to your feature:
+map.getView().fit(extent, map.getSize());
+*/
 
+
+// MAP layers
         var lyr_EsriImagery_0 = new ol.layer.Tile({
             'title': 'Esri Imagery',
             'opacity': 1.000000,
-            
-            
+
+
             source: new ol.source.XYZ({
             attributions: ' ',
                 url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
@@ -15,8 +20,8 @@ var wms_layers = [];
         var lyr_F4Map2D_1 = new ol.layer.Tile({
             'title': 'F4 Map - 2D',
             'opacity': 1.000000,
-            
-            
+
+
             source: new ol.source.XYZ({
             attributions: ' ',
                 url: 'https://tile1.f4map.com/tiles/f4_2d/{z}/{x}/{y}.png'
@@ -26,15 +31,19 @@ var wms_layers = [];
         var lyr_GoogleSatelliteHybrid_2 = new ol.layer.Tile({
             'title': 'Google Satellite Hybrid',
             'opacity': 1.000000,
-            
-            
+
+
             source: new ol.source.XYZ({
             attributions: ' ',
                 url: 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}'
             })
         });
+
+
+// addedd layers before var layersList = [lyr_EsriImagery_0,lyr_F4Map2D_1,lyr_GoogleSatelliteHybrid_2,lyr_AlexandrianGreeks_3, lyr_RowanMustafa];
+// 1) attributes elements layer
 var format_AlexandrianGreeks_3 = new ol.format.GeoJSON();
-var features_AlexandrianGreeks_3 = format_AlexandrianGreeks_3.readFeatures(json_AlexandrianGreeks_3, 
+var features_AlexandrianGreeks_3 = format_AlexandrianGreeks_3.readFeatures(json_AlexandrianGreeks_3,
             {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
 var jsonSource_AlexandrianGreeks_3 = new ol.source.Vector({
     attributions: ' ',
@@ -42,7 +51,7 @@ var jsonSource_AlexandrianGreeks_3 = new ol.source.Vector({
 jsonSource_AlexandrianGreeks_3.addFeatures(features_AlexandrianGreeks_3);
 var lyr_AlexandrianGreeks_3 = new ol.layer.Vector({
                 declutter: false,
-                source:jsonSource_AlexandrianGreeks_3, 
+                source:jsonSource_AlexandrianGreeks_3,
                 style: style_AlexandrianGreeks_3,
                 popuplayertitle: "AlexandrianGreeks",
                 interactive: true,
@@ -57,3 +66,8 @@ lyr_AlexandrianGreeks_3.set('fieldLabels', {'id': 'no label', 'AlexandrianGreeks
 lyr_AlexandrianGreeks_3.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
+
+
+//2) The Added Rowan layer
+
+
