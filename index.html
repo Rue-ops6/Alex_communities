@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>AlexandrianGreeks</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/AlexandrianGreeks_2.js"></script>
+        <script src="data/RowanMustafaSign_3.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var title = new L.Control({'position':'topright'});
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>AlexandrianGreeks</h2>';
+        };
+        title.addTo(map);
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+            map.setMaxBounds(map.getBounds());
+        }
+        map.createPane('pane_F4Map2D_0');
+        map.getPane('pane_F4Map2D_0').style.zIndex = 400;
+        var layer_F4Map2D_0 = L.tileLayer('https://tile1.f4map.com/tiles/f4_2d/{z}/{x}/{y}.png', {
+            pane: 'pane_F4Map2D_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+        });
+        layer_F4Map2D_0;
+        map.addLayer(layer_F4Map2D_0);
+        map.createPane('pane_GoogleSatelliteHybrid_1');
+        map.getPane('pane_GoogleSatelliteHybrid_1').style.zIndex = 401;
+        var layer_GoogleSatelliteHybrid_1 = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatelliteHybrid_1',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+        });
+        layer_GoogleSatelliteHybrid_1;
+        map.addLayer(layer_GoogleSatelliteHybrid_1);
+        function pop_AlexandrianGreeks_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Surveyor</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field3">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field3'] !== null ? autolinker.link(String(feature.properties['AlexandrianGreeks — Form responses 1_Field3']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field4</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field4">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field4'] !== null ? autolinker.link(String(feature.properties['AlexandrianGreeks — Form responses 1_Field4']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field5</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field5">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field5'] !== null ? autolinker.link(String(feature.properties['AlexandrianGreeks — Form responses 1_Field5']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field6</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field6">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field6'] !== null ? autolinker.link(String(feature.properties['AlexandrianGreeks — Form responses 1_Field6']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field7</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field7">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field7'] !== null ? autolinker.link(String(feature.properties['AlexandrianGreeks — Form responses 1_Field7']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field8</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field8">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field8'] !== null ? '<img src="images/' + String(feature.properties['AlexandrianGreeks — Form responses 1_Field8']).replace(/[\\/:]/g, '_').trim().replace(/'/g, '\'').replace(/"/g, '&quot;') + '">' : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field9</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field9">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field9'] !== null ? '<img src="images/' + String(feature.properties['AlexandrianGreeks — Form responses 1_Field9']).replace(/[\\/:]/g, '_').trim().replace(/'/g, '\'').replace(/"/g, '&quot;') + '">' : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field10</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field10">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field10'] !== null ? autolinker.link(String(feature.properties['AlexandrianGreeks — Form responses 1_Field10']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field11</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field11">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field11'] !== null ? autolinker.link(String(feature.properties['AlexandrianGreeks — Form responses 1_Field11']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">AlexandrianGreeks — Form responses 1_Field12</th>\
+                        <td class="visible-with-data" id="AlexandrianGreeks — Form responses 1_Field12">' + (feature.properties['AlexandrianGreeks — Form responses 1_Field12'] !== null ? autolinker.link(String(feature.properties['AlexandrianGreeks — Form responses 1_Field12']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+        function style_AlexandrianGreeks_2_0(feature) {
+            var context = {
+                feature: feature,
+                variables: {}
+            };
+            // Start of if blocks and style check logic
+            if (exp_AlexandrianGreeks_2rule0_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(13,94,175,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule1_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,84,156,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule2_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(96,40,173,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule3_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,97,113,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule4_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(13,94,175,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule5_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,232,10,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule6_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,84,64,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule7_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(16,220,212,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule8_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(90,140,90,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule9_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(194,13,13,1.0)',
+                interactive: true,
+            };
+                }
+                else if (exp_AlexandrianGreeks_2rule10_eval_expression(context)) {
+                  return {
+                pane: 'pane_AlexandrianGreeks_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(254,254,254,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(217,185,95,1.0)',
+                interactive: true,
+            };
+                }
+            else {
+                return {fill: false, stroke: false};
+            }
+        }
+        map.createPane('pane_AlexandrianGreeks_2');
+        map.getPane('pane_AlexandrianGreeks_2').style.zIndex = 402;
+        map.getPane('pane_AlexandrianGreeks_2').style['mix-blend-mode'] = 'normal';
+        var layer_AlexandrianGreeks_2 = new L.geoJson(json_AlexandrianGreeks_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_AlexandrianGreeks_2',
+            layerName: 'layer_AlexandrianGreeks_2',
+            pane: 'pane_AlexandrianGreeks_2',
+            onEachFeature: pop_AlexandrianGreeks_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_AlexandrianGreeks_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_AlexandrianGreeks_2);
+        map.addLayer(layer_AlexandrianGreeks_2);
+        function pop_RowanMustafaSign_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TheCreator'] !== null ? autolinker.link(String(feature.properties['TheCreator']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_RowanMustafaSign_3_0() {
+            return {
+                pane: 'pane_RowanMustafaSign_3',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(249,78,82,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(249,78,82,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_RowanMustafaSign_3');
+        map.getPane('pane_RowanMustafaSign_3').style.zIndex = 403;
+        map.getPane('pane_RowanMustafaSign_3').style['mix-blend-mode'] = 'normal';
+        var layer_RowanMustafaSign_3 = new L.geoJson(json_RowanMustafaSign_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_RowanMustafaSign_3',
+            layerName: 'layer_RowanMustafaSign_3',
+            pane: 'pane_RowanMustafaSign_3',
+            onEachFeature: pop_RowanMustafaSign_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_RowanMustafaSign_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_RowanMustafaSign_3);
+        map.addLayer(layer_RowanMustafaSign_3);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var overlaysTree = [
+            {label: '<img src="legend/RowanMustafaSign_3.png" /> RowanMustafaSign', layer: layer_RowanMustafaSign_3},
+            {label: 'AlexandrianGreeks<br /><table><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_villas0.png" /></td><td>villas</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_screeningvenues1.png" /></td><td>screening venues</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_crafts2.png" /></td><td>crafts</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_mixed3.png" /></td><td>mixed</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_ABGreeks4.png" /></td><td>ABGreeks</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_schools5.png" /></td><td>schools</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_clubs6.png" /></td><td>clubs</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_hospitals7.png" /></td><td>hospitals</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_orphanages8.png" /></td><td>orphanages</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_restaurants9.png" /></td><td>restaurants</td></tr><tr><td style="text-align: center;"><img src="legend/AlexandrianGreeks_2_religious10.png" /></td><td>religious</td></tr></table>', layer: layer_AlexandrianGreeks_2},
+            {label: "Google Satellite Hybrid", layer: layer_GoogleSatelliteHybrid_1},
+            {label: "F4 Map - 2D", layer: layer_F4Map2D_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        var i = 0;
+        layer_RowanMustafaSign_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['TheCreator'] !== null?String('<div style="color: #f94e52; font-size: 15pt; font-weight: bold; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['TheCreator']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_RowanMustafaSign_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels([layer_RowanMustafaSign_3]);
+        map.on("zoomend", function(){
+            resetLabels([layer_RowanMustafaSign_3]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_RowanMustafaSign_3]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_RowanMustafaSign_3]);
+        });
+        </script>
+    </body>
+</html>
